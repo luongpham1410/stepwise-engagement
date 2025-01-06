@@ -175,6 +175,7 @@ const Index = () => {
           handleNext={handleNext}
           handleBack={handleBack}
           currentStep={currentStep}
+          totalSteps={questions.length}
         />
         <ProgressSteps currentStep={currentStep} />
       </div>

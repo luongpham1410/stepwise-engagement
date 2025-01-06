@@ -13,6 +13,7 @@ interface QuestionRendererProps {
   handleNext: () => void;
   handleBack: () => void;
   currentStep: number;
+  totalSteps: number;
 }
 
 const QuestionRenderer: React.FC<QuestionRendererProps> = ({
@@ -22,6 +23,7 @@ const QuestionRenderer: React.FC<QuestionRendererProps> = ({
   handleNext,
   handleBack,
   currentStep,
+  totalSteps,
 }) => {
   if (question.type === 'final') {
     return (
@@ -110,7 +112,7 @@ const QuestionRenderer: React.FC<QuestionRendererProps> = ({
           Back
         </Button>
         <Button onClick={handleNext}>
-          {currentStep === questions.length - 1 ? 'Submit' : 'Next step'}
+          {currentStep === totalSteps - 1 ? 'Submit' : 'Next step'}
         </Button>
       </div>
     </QuestionCard>
