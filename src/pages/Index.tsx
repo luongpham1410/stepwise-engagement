@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import ProgressBar from '@/components/ProgressBar';
-import QuestionCard from '@/components/QuestionCard';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import CountrySelect from '@/components/questions/CountrySelect';
-import RadioQuestion from '@/components/questions/RadioQuestion';
-import TextQuestion from '@/components/questions/TextQuestion';
-import { Checkbox } from '@/components/ui/checkbox';
 import ProgressSteps from '@/components/ProgressSteps';
+import WelcomeScreen from '@/components/WelcomeScreen';
+import QuestionRenderer from '@/components/questions/QuestionRenderer';
 
 interface FormData {
   citizenship: string;
@@ -104,6 +100,7 @@ const questions = [
 ];
 
 const Index = () => {
+  const [showWelcome, setShowWelcome] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
     citizenship: '',
@@ -157,108 +154,28 @@ const Index = () => {
     }
   };
 
-  const renderQuestion = () => {
-    const question = questions[currentStep];
-
-    if (question.type === 'final') {
-      return (
-        <QuestionCard 
-          title={question.title}
-          className="min-h-[400px] flex flex-col"
-        >
-          <div className="flex-grow space-y-6">
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Important things to know</h3>
-              {question.disclaimers.map((disclaimer, index) => (
-                <p key={index} className="text-muted-foreground">{disclaimer}</p>
-              ))}
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="disclaimers" 
-                checked={formData.disclaimerAccepted}
-                onCheckedChange={(checked) => 
-                  handleInputChange('disclaimerAccepted', checked === true)
-                }
-              />
-              <label 
-                htmlFor="disclaimers" 
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                I have read and understood the above disclaimers
-              </label>
-            </div>
-          </div>
-
-          <div className="flex justify-between mt-8">
-            <Button
-              variant="secondary"
-              onClick={handleBack}
-              disabled={currentStep === 0}
-            >
-              Back
-            </Button>
-            <Button onClick={handleNext}>
-              Complete
-            </Button>
-          </div>
-        </QuestionCard>
-      );
-    }
-
+  if (showWelcome) {
     return (
-      <QuestionCard 
-        title={question.title}
-        subtitle={question.subtitle}
-        className="min-h-[400px] flex flex-col"
-      >
-        <div className="flex-grow">
-          {question.type === 'country-select' && (
-            <CountrySelect
-              value={formData[question.id as keyof FormData] as string}
-              onChange={(value) => handleInputChange(question.id as keyof FormData, value)}
-            />
-          )}
-
-          {question.type === 'radio' && (
-            <RadioQuestion
-              options={question.options || []}
-              value={formData[question.id as keyof FormData] as string}
-              onChange={(value) => handleInputChange(question.id as keyof FormData, value)}
-            />
-          )}
-
-          {question.type === 'text' && (
-            <TextQuestion
-              value={formData[question.id as keyof FormData] as string}
-              onChange={(value) => handleInputChange(question.id as keyof FormData, value)}
-              placeholder={question.placeholder}
-            />
-          )}
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+        <div className="max-w-4xl mx-auto pt-12">
+          <WelcomeScreen onNext={() => setShowWelcome(false)} />
         </div>
-
-        <div className="flex justify-between mt-8">
-          <Button
-            variant="secondary"
-            onClick={handleBack}
-            disabled={currentStep === 0}
-          >
-            Back
-          </Button>
-          <Button onClick={handleNext}>
-            {currentStep === questions.length - 1 ? 'Submit' : 'Next step'}
-          </Button>
-        </div>
-      </QuestionCard>
+      </div>
     );
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
       <div className="max-w-2xl mx-auto pt-12">
         <ProgressBar currentStep={currentStep + 1} totalSteps={questions.length} />
-        {renderQuestion()}
+        <QuestionRenderer
+          question={questions[currentStep]}
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleNext={handleNext}
+          handleBack={handleBack}
+          currentStep={currentStep}
+        />
         <ProgressSteps currentStep={currentStep} />
       </div>
     </div>
