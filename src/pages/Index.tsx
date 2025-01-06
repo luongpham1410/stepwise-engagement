@@ -4,6 +4,7 @@ import { useToast } from '@/components/ui/use-toast';
 import ProgressSteps from '@/components/ProgressSteps';
 import WelcomeScreen from '@/components/WelcomeScreen';
 import QuestionRenderer from '@/components/questions/QuestionRenderer';
+import HomePage from '@/components/HomePage';
 
 interface FormData {
   citizenship: string;
@@ -102,6 +103,7 @@ const questions = [
 const Index = () => {
   const [showWelcome, setShowWelcome] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     citizenship: '',
     availability: '',
@@ -145,6 +147,7 @@ const Index = () => {
         description: "Your responses have been submitted.",
       });
       console.log('Form submitted:', formData);
+      setIsCompleted(true);
     }
   };
 
@@ -155,6 +158,10 @@ const Index = () => {
       setCurrentStep(prev => prev - 1);
     }
   };
+
+  if (isCompleted) {
+    return <HomePage />;
+  }
 
   if (showWelcome) {
     return (
