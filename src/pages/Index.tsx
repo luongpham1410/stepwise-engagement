@@ -3,6 +3,9 @@ import ProgressBar from '@/components/ProgressBar';
 import QuestionCard from '@/components/QuestionCard';
 import Button from '@/components/Button';
 import { useToast } from '@/components/ui/use-toast';
+import CountrySelect from '@/components/questions/CountrySelect';
+import RadioQuestion from '@/components/questions/RadioQuestion';
+import TextQuestion from '@/components/questions/TextQuestion';
 
 interface FormData {
   citizenship: string;
@@ -17,8 +20,7 @@ const questions = [
     id: 'citizenship',
     title: "Which country or countries do you currently hold citizenship in?",
     subtitle: "You can change this anytime.",
-    type: 'select',
-    options: ['United States', 'Canada', 'United Kingdom', 'Australia', 'Other']
+    type: 'country-select'
   },
   {
     id: 'availability',
@@ -124,52 +126,26 @@ const Index = () => {
         className="min-h-[400px] flex flex-col"
       >
         <div className="flex-grow">
-          {question.type === 'select' && (
-            <select
-              className="w-full p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+          {question.type === 'country-select' && (
+            <CountrySelect
               value={formData[question.id as keyof FormData]}
-              onChange={(e) => handleInputChange(question.id as keyof FormData, e.target.value)}
-            >
-              <option value="">Select a country</option>
-              {question.options.map((option) => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
+              onChange={(value) => handleInputChange(question.id as keyof FormData, value)}
+            />
           )}
 
           {question.type === 'radio' && (
-            <div className="space-y-4">
-              {question.options.map((option) => (
-                <label
-                  key={option.value}
-                  className="flex items-start p-4 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
-                >
-                  <input
-                    type="radio"
-                    name={question.id}
-                    value={option.value}
-                    checked={formData[question.id as keyof FormData] === option.value}
-                    onChange={(e) => handleInputChange(question.id as keyof FormData, e.target.value)}
-                    className="mt-1 mr-4"
-                  />
-                  <div>
-                    <div className="font-medium">{option.label}</div>
-                    {option.description && (
-                      <div className="text-sm text-gray-500">{option.description}</div>
-                    )}
-                  </div>
-                </label>
-              ))}
-            </div>
+            <RadioQuestion
+              options={question.options || []}
+              value={formData[question.id as keyof FormData]}
+              onChange={(value) => handleInputChange(question.id as keyof FormData, value)}
+            />
           )}
 
           {question.type === 'text' && (
-            <input
-              type="text"
-              placeholder={question.placeholder}
+            <TextQuestion
               value={formData[question.id as keyof FormData]}
-              onChange={(e) => handleInputChange(question.id as keyof FormData, e.target.value)}
-              className="w-full p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+              onChange={(value) => handleInputChange(question.id as keyof FormData, value)}
+              placeholder={question.placeholder}
             />
           )}
         </div>
