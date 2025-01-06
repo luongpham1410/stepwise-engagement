@@ -107,7 +107,6 @@ const QuestionRenderer: React.FC<QuestionRendererProps> = ({
         <Button
           variant="secondary"
           onClick={handleBack}
-          disabled={currentStep === 0}
         >
           Back
         </Button>
