@@ -6,6 +6,7 @@ import { useToast } from '@/components/ui/use-toast';
 import CountrySelect from '@/components/questions/CountrySelect';
 import RadioQuestion from '@/components/questions/RadioQuestion';
 import TextQuestion from '@/components/questions/TextQuestion';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface FormData {
   citizenship: string;
@@ -13,6 +14,7 @@ interface FormData {
   startTime: string;
   salary: string;
   englishLevel: string;
+  disclaimerAccepted: boolean;
 }
 
 const questions = [
@@ -88,6 +90,15 @@ const questions = [
       { label: 'Limited Working Proficiency', value: 'limited' },
       { label: 'Elementary Proficiency', value: 'elementary' }
     ]
+  },
+  {
+    id: 'disclaimerAccepted',
+    title: "Just one last step!",
+    type: 'final',
+    disclaimers: [
+      "Job opportunities are offered on a rolling basis at the discretion of the employer and are not necessarily guaranteed within any specific time frame.",
+      "Be sure to comply with local labor laws. We are not responsible for any legal issues that may arise from non-compliance."
+    ]
   }
 ];
 
@@ -98,17 +109,28 @@ const Index = () => {
     availability: '',
     startTime: '',
     salary: '',
-    englishLevel: ''
+    englishLevel: '',
+    disclaimerAccepted: false
   });
   const { toast } = useToast();
 
-  const handleInputChange = (id: keyof FormData, value: string) => {
+  const handleInputChange = (id: keyof FormData, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [id]: value }));
   };
 
   const handleNext = () => {
     const currentQuestion = questions[currentStep];
-    if (!formData[currentQuestion.id as keyof FormData]) {
+    
+    if (currentQuestion.type === 'final') {
+      if (!formData.disclaimerAccepted) {
+        toast({
+          title: "Please acknowledge the disclaimers",
+          description: "You must read and accept the disclaimers to proceed.",
+          variant: "destructive"
+        });
+        return;
+      }
+    } else if (!formData[currentQuestion.id as keyof FormData]) {
       toast({
         title: "Please answer the question",
         description: "This field is required to proceed.",
@@ -137,6 +159,53 @@ const Index = () => {
   const renderQuestion = () => {
     const question = questions[currentStep];
 
+    if (question.type === 'final') {
+      return (
+        <QuestionCard 
+          title={question.title}
+          className="min-h-[400px] flex flex-col"
+        >
+          <div className="flex-grow space-y-6">
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Important things to know</h3>
+              {question.disclaimers.map((disclaimer, index) => (
+                <p key={index} className="text-muted-foreground">{disclaimer}</p>
+              ))}
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="disclaimers" 
+                checked={formData.disclaimerAccepted}
+                onCheckedChange={(checked) => 
+                  handleInputChange('disclaimerAccepted', checked === true)
+                }
+              />
+              <label 
+                htmlFor="disclaimers" 
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                I have read and understood the above disclaimers
+              </label>
+            </div>
+          </div>
+
+          <div className="flex justify-between mt-8">
+            <Button
+              variant="secondary"
+              onClick={handleBack}
+              disabled={currentStep === 0}
+            >
+              Back
+            </Button>
+            <Button onClick={handleNext}>
+              Complete
+            </Button>
+          </div>
+        </QuestionCard>
+      );
+    }
+
     return (
       <QuestionCard 
         title={question.title}
@@ -146,7 +215,7 @@ const Index = () => {
         <div className="flex-grow">
           {question.type === 'country-select' && (
             <CountrySelect
-              value={formData[question.id as keyof FormData]}
+              value={formData[question.id as keyof FormData] as string}
               onChange={(value) => handleInputChange(question.id as keyof FormData, value)}
             />
           )}
@@ -154,14 +223,14 @@ const Index = () => {
           {question.type === 'radio' && (
             <RadioQuestion
               options={question.options || []}
-              value={formData[question.id as keyof FormData]}
+              value={formData[question.id as keyof FormData] as string}
               onChange={(value) => handleInputChange(question.id as keyof FormData, value)}
             />
           )}
 
           {question.type === 'text' && (
             <TextQuestion
-              value={formData[question.id as keyof FormData]}
+              value={formData[question.id as keyof FormData] as string}
               onChange={(value) => handleInputChange(question.id as keyof FormData, value)}
               placeholder={question.placeholder}
             />
