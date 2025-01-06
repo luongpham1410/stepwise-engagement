@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Upload } from 'lucide-react';
-import ProgressBar from './ProgressBar';
+import ProgressSteps from './ProgressSteps';
 
 interface WelcomeScreenProps {
   onNext: () => void;
@@ -11,7 +11,6 @@ interface WelcomeScreenProps {
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onNext, totalSteps }) => {
   return (
     <div className="max-w-4xl mx-auto pt-12">
-      <ProgressBar currentStep={1} totalSteps={totalSteps} />
       <div className="min-h-[500px] flex flex-col items-center justify-center space-y-8 bg-white rounded-lg p-8 shadow-lg">
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold">
@@ -45,6 +44,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onNext, totalSteps }) => 
           </Button>
         </div>
       </div>
+      <ProgressSteps currentStep={0} />
     </div>
   );
 };
