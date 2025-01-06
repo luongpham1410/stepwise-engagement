@@ -42,11 +42,6 @@ const questions = [
         label: "I'm flexible",
         description: 'I can work both full time or part time.',
         value: 'flexible'
-      },
-      {
-        label: "I can start within 24 hours",
-        description: 'I am available to begin work immediately.',
-        value: 'immediate'
       }
     ]
   },
@@ -54,8 +49,26 @@ const questions = [
     id: 'startTime',
     title: "If accepted, when can you start the position?",
     subtitle: "Please specify the notice period required.",
-    type: 'text',
-    placeholder: 'Enter number of weeks'
+    type: 'radio',
+    options: [
+      {
+        label: "I can start within 24 hours",
+        description: 'I am available to begin work immediately.',
+        value: 'immediate'
+      },
+      {
+        label: "1-2 weeks",
+        value: '1-2-weeks'
+      },
+      {
+        label: "2-4 weeks",
+        value: '2-4-weeks'
+      },
+      {
+        label: "More than 4 weeks",
+        value: 'more-than-4-weeks'
+      }
+    ]
   },
   {
     id: 'salary',
