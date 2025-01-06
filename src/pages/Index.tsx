@@ -42,6 +42,11 @@ const questions = [
         label: "I'm flexible",
         description: 'I can work both full time or part time.',
         value: 'flexible'
+      },
+      {
+        label: "I can start within 24 hours",
+        description: 'I am available to begin work immediately.',
+        value: 'immediate'
       }
     ]
   },
