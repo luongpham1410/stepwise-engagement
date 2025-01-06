@@ -258,8 +258,8 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
       <div className="max-w-2xl mx-auto pt-12">
         <ProgressBar currentStep={currentStep + 1} totalSteps={questions.length} />
-        <ProgressSteps currentStep={currentStep} />
         {renderQuestion()}
+        <ProgressSteps currentStep={currentStep} />
       </div>
     </div>
   );
