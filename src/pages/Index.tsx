@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import ProgressBar from '@/components/ProgressBar';
 import QuestionCard from '@/components/QuestionCard';
-import Button from '@/components/Button';
+import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import CountrySelect from '@/components/questions/CountrySelect';
 import RadioQuestion from '@/components/questions/RadioQuestion';
 import TextQuestion from '@/components/questions/TextQuestion';
 import { Checkbox } from '@/components/ui/checkbox';
+import ProgressSteps from '@/components/ProgressSteps';
 
 interface FormData {
   citizenship: string;
@@ -257,6 +258,7 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
       <div className="max-w-2xl mx-auto pt-12">
         <ProgressBar currentStep={currentStep + 1} totalSteps={questions.length} />
+        <ProgressSteps currentStep={currentStep} />
         {renderQuestion()}
       </div>
     </div>
